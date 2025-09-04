@@ -1,0 +1,54 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+# Samples & values (Nutrient Agar example – replace with actual values if needed)
+samples = [
+    "ASAK1(LC)", "ASAK2(LC)", "ASIWA(LC)", "ASYAB(LC)", "ASSUR(LC)", "ASBTH(LC)", "ASIGB(LC)",  # Lagos Central
+    "ASMUS(LW)", "ASILU(LW)", "ASIKJ(LW)", "ASAGE(LW)", "ASOSD(LW)", "ASMARY(LW)",              # Lagos West
+    "ASBAR(LE)", "ASSHO(LE)", "ASGBA1(LE)", "ASKSF(LE)", "ASIKD(LE)"                           # Lagos East
+]
+
+values = [
+    6.301, 6.250, 6.100, 6.221, 5.900, 6.330, 6.280,   # Lagos Central
+    6.510, 6.270, 6.150, 6.580, 6.520, 5.870,          # Lagos West
+    5.400, 6.320, 6.050, 6.170, 6.100                  # Lagos East
+]
+
+# Group sizes for LC, LW, LE
+groups = ["Lagos Central", "Lagos West", "Lagos East"]
+group_sizes = [7, 6, 5]
+
+x = np.arange(len(samples))
+
+plt.figure(figsize=(12,6))
+bars = plt.bar(x, values, color="royalblue", width=0.6, yerr=0.02, capsize=4, error_kw=dict(ecolor="black"))
+
+# Format
+plt.xticks(x, samples, rotation=90, fontsize=9)
+plt.ylabel("Log10(CFU/mL)", fontsize=12)
+plt.title("Plate Count on Agar", fontsize=14, fontweight="bold")
+
+# Add dashed separators + group labels ABOVE the bars
+current = 0
+for i, size in enumerate(group_sizes):
+    if current > 0:
+        plt.axvline(current - 0.5, color="gray", linestyle="--", alpha=0.7)
+    plt.text(current + size/2 - 0.5, max(values) + 0.05, groups[i],
+             ha="center", va="bottom", fontsize=11, fontweight="bold")
+    current += size
+
+# Detailed y-axis ticks
+y_min = min(values) - 0.05
+y_max = max(values) + 0.10
+plt.yticks(np.arange(round(y_min,2), round(y_max,2)+0.01, 0.05))
+plt.ylim(y_min, y_max)
+
+plt.tight_layout()
+
+# Save to Downloads
+downloads_path = os.path.join(os.path.expanduser("~"), "Downloads", "plate-l_count_agarrr3.png")
+plt.savefig(downloads_path, dpi=300, bbox_inches="tight")
+
+plt.show()
+print(f"Chart saved to: {downloads_path}")
